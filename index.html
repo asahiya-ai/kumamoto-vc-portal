@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>熊本ボランティア速報板｜行く前に確認</title>
+<meta name="description" content="令和8年熊本地震のボランティア活動前に確認したい、VC募集状況・断水/トイレ状況・当日の流れ・高速道路無料措置・コンビニ復旧状況・宿泊情報を1枚にまとめた非公式ポータルです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="">
+<style>
+  :root{
+    --ink:#1B1B18;
+    --ink-soft:#4A4842;
+    --paper:#EFEEE7;
+    --panel:#FFFFFF;
+    --line:#D8D5C9;
+    --water:#2F6F8F;
+    --water-soft:#E4EEF2;
+    --alert:#C4432B;
+    --alert-soft:#F7E7E2;
+    --amber:#B4791A;
+    --amber-soft:#F5E9D3;
+    --green:#3E7A4C;
+    --green-soft:#E4EFE5;
+    --gray:#8A867A;
+    --gray-soft:#EDEBE3;
+    --focus:#1B1B18;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans JP",sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+  a{color:inherit;}
+  a:focus-visible, button:focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+
+  .wrap{max-width:960px; margin:0 auto; padding:0 18px;}
+
+  header.top{
+    background:var(--ink);
+    color:var(--paper);
+    padding:22px 0 20px;
+    border-bottom:6px solid var(--alert);
+  }
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    color:#CFCBBE;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--alert); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  h1{
+    font-family:"Zen Kaku Gothic New",sans-serif;
+    font-weight:900;
+    font-size:clamp(24px,6vw,32px);
+    margin:10px 0 6px;
+    line-height:1.25;
+  }
+  header.top p{margin:0; color:#D9D6C9; font-size:14.5px; max-width:680px;}
+
+  .stamp{
+    display:inline-flex; align-items:baseline; gap:6px;
+    font-family:"JetBrains Mono",monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:3px 8px 4px;
+    border-radius:var(--radius);
+  }
+  .stamp b{color:var(--ink); font-weight:700;}
+  .stamp.live{background:var(--green-soft); border-color:var(--green); color:var(--green);}
+  .stamp.live b{color:var(--green);}
+
+  section{padding:34px 0 6px;}
+  .sec-head{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+    border-bottom:3px solid var(--ink);
+    padding-bottom:10px;
+    margin-bottom:16px;
+  }
+  .sec-head h2{
+    font-family:"Zen Kaku Gothic New",sans-serif;
+    font-weight:700;
+    font-size:19px;
+    margin:0;
+  }
+  .sec-num{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);}
+  .lede{font-size:14px; color:var(--ink-soft); margin:0 0 16px;}
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:14px;
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:6px;
+    font-weight:700; font-size:14px;
+    background:var(--ink); color:var(--paper);
+    padding:11px 16px;
+    border-radius:var(--radius);
+    text-decoration:none;
+    border:1px solid var(--ink);
+    cursor:pointer;
+  }
+  .btn.alt{background:transparent; color:var(--ink); border:1px solid var(--ink);}
+  .btn.small{padding:7px 11px; font-size:12.5px;}
+  .btn-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;}
+
+  #map{width:100%; height:440px; border:1px solid var(--line); background:var(--panel);}
+  @media (min-width:800px){ #map{height:520px;} }
+
+  .legend{
+    display:flex; flex-direction:column; gap:8px;
+    font-size:12px; color:var(--ink-soft);
+    background:var(--panel); border:1px solid var(--line);
+    padding:10px 12px; margin-top:8px;
+  }
+  .legend .grp{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  .legend .grp-title{font-weight:700; color:var(--ink); flex:0 0 auto;}
+  .legend .dot{display:inline-flex; align-items:center; gap:5px;}
+  .legend .sw{width:11px; height:11px; border-radius:50%; display:inline-block; border:1px solid rgba(0,0,0,.25);}
+  .legend .sw.square{border-radius:2px;}
+
+  .warn-box{
+    background:var(--alert-soft); border:1px solid var(--alert);
+    color:#7A2A1B; padding:12px 14px; border-radius:var(--radius);
+    font-size:13.5px; margin-bottom:18px;
+  }
+  .warn-box b{color:var(--alert);}
+  .info-box{
+    background:var(--water-soft); border:1px solid var(--water);
+    color:#1E4B60; padding:12px 14px; border-radius:var(--radius);
+    font-size:13.5px; margin-bottom:18px;
+  }
+  .info-box b{color:var(--water);}
+  .live-box{
+    background:var(--green-soft); border:1px solid var(--green);
+    color:#245234; padding:12px 14px; border-radius:var(--radius);
+    font-size:13.5px; margin-bottom:14px;
+  }
+  .live-box b{color:var(--green);}
+
+  .toilet-card{
+    background:var(--amber-soft); border:1px solid var(--amber);
+    padding:14px 16px; border-radius:var(--radius); font-size:13.5px; color:#5C4110;
+  }
+  .toilet-card b{color:var(--amber);}
+  .checklist{margin:10px 0 0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:6px;}
+  .checklist li{padding-left:22px; position:relative;}
+  .checklist li::before{content:"✓"; position:absolute; left:0; top:0; font-weight:700; color:var(--amber);}
+
+  .flow-list{list-style:none; margin:0; padding:0; counter-reset:step; display:flex; flex-direction:column; gap:0;}
+  .flow-list li{
+    counter-increment:step;
+    background:var(--panel); border:1px solid var(--line); border-bottom:0;
+    padding:13px 14px 13px 52px; position:relative; font-size:14px;
+  }
+  .flow-list li:last-child{border-bottom:1px solid var(--line);}
+  .flow-list li::before{
+    content:counter(step);
+    position:absolute; left:14px; top:12px;
+    width:26px; height:26px; border-radius:50%;
+    background:var(--ink); color:var(--paper);
+    font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .flow-list b{display:block; font-size:14.5px; font-family:"Zen Kaku Gothic New",sans-serif;}
+  .flow-list span.note{display:block; font-size:12.5px; color:var(--ink-soft); margin-top:3px;}
+  .flow-list li.pre{background:var(--amber-soft); border-color:var(--amber);}
+  .flow-list li.pre::before{background:var(--amber);}
+
+  .step-list{list-style:none; margin:0; padding:0; counter-reset:step; display:flex; flex-direction:column; gap:10px;}
+  .step-list li{
+    counter-increment:step;
+    background:var(--panel); border:1px solid var(--line);
+    padding:12px 14px 12px 46px; border-radius:var(--radius); position:relative; font-size:13.5px;
+  }
+  .step-list li::before{
+    content:counter(step);
+    position:absolute; left:12px; top:12px;
+    width:22px; height:22px; border-radius:50%;
+    background:var(--ink); color:var(--paper);
+    font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step-list b{display:block; margin-bottom:3px; font-size:14px;}
+
+  .store-grid{display:grid; grid-template-columns:1fr; gap:10px;}
+  @media (min-width:640px){ .store-grid{grid-template-columns:repeat(3,1fr);} }
+  .store-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:14px;}
+  .store-card h4{margin:0 0 6px; font-size:14.5px; font-family:"Zen Kaku Gothic New",sans-serif;}
+  .store-card .rate{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--green); font-weight:700; margin-bottom:6px; display:block;}
+  .store-card p{margin:0 0 10px; font-size:12.5px; color:var(--ink-soft);}
+
+  .hotel-grid{display:grid; grid-template-columns:1fr; gap:10px;}
+  @media (min-width:640px){ .hotel-grid{grid-template-columns:repeat(2,1fr);} }
+  .hotel-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px;}
+  .hotel-card h4{margin:0 0 6px; font-size:14.5px; font-family:"Zen Kaku Gothic New",sans-serif;}
+  .hotel-card p{margin:0 0 10px; font-size:12.5px; color:var(--ink-soft);}
+
+  .leaflet-popup-content{font-family:"Noto Sans JP",sans-serif; font-size:13px; line-height:1.5;}
+  .leaflet-popup-content b{font-size:14px;}
+  .popup-link{display:inline-block; margin-top:6px; font-weight:700; text-decoration:underline;}
+  .vc-tooltip{
+    background:#fff !important; color:var(--ink) !important;
+    border:1px solid var(--ink) !important; border-radius:2px !important;
+    font-family:"Zen Kaku Gothic New",sans-serif; font-weight:700; font-size:11.5px;
+    padding:2px 7px !important; box-shadow:0 1px 3px rgba(0,0,0,.2) !important;
+  }
+  .vc-tooltip::before{border-top-color:var(--ink) !important;}
+  .vc-tooltip .kana{font-weight:500; font-size:10.5px; color:var(--ink-soft);}
+  .epi-tooltip{
+    background:var(--alert) !important; color:#fff !important;
+    border:1px solid var(--alert) !important; border-radius:2px !important;
+    font-family:"Zen Kaku Gothic New",sans-serif; font-weight:700; font-size:11.5px;
+    padding:2px 7px !important; box-shadow:0 1px 3px rgba(0,0,0,.3) !important;
+  }
+  .epi-tooltip::before{border-top-color:var(--alert) !important;}
+
+  .kana-box{
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius); padding:12px 14px; margin-top:12px;
+  }
+  .kana-box summary{
+    font-weight:700; font-size:13.5px; cursor:pointer;
+    font-family:"Zen Kaku Gothic New",sans-serif;
+  }
+  .kana-list{
+    list-style:none; margin:12px 0 0; padding:0;
+    display:grid; grid-template-columns:1fr; gap:0;
+  }
+  @media (min-width:520px){ .kana-list{grid-template-columns:repeat(2,1fr); column-gap:22px;} }
+  @media (min-width:800px){ .kana-list{grid-template-columns:repeat(3,1fr);} }
+  .kana-list li{
+    display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+    padding:6px 2px; border-bottom:1px dotted var(--line); font-size:13.5px;
+  }
+  .kana-list .k{font-weight:700;}
+  .kana-list .y{color:var(--ink-soft); font-size:12.5px;}
+  .kana-list .y b{color:var(--alert); font-weight:700;}
+  .kana-note{font-size:11.5px; color:var(--ink-soft); margin:12px 0 0;}
+
+  .sns-cols{display:flex; flex-direction:column; gap:20px;}
+  .sns-col h3{font-family:"Zen Kaku Gothic New",sans-serif; font-size:15px; margin:0 0 10px; display:flex; align-items:center; gap:8px;}
+  .sns-badge{font-family:"JetBrains Mono",monospace; font-size:11px; padding:2px 7px; border-radius:999px; border:1px solid var(--line);}
+  .frame-box{border:1px solid var(--line); background:#fff; overflow:hidden;}
+  .fallback-link{display:block; text-align:center; font-size:13px; font-weight:700; padding:10px; background:var(--panel); border:1px solid var(--line); border-top:0; text-decoration:underline;}
+  .insta-links{display:flex; flex-direction:column; gap:8px;}
+  .insta-links a{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); text-decoration:none; font-size:14px; font-weight:500;}
+  .insta-links a span.arrow{font-family:"JetBrains Mono",monospace; color:var(--ink-soft);}
+
+  footer{margin-top:40px; padding:24px 0 40px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft);}
+  footer p{margin:0 0 10px;}
+  footer a{text-decoration:underline;}
+
+  .toplink-bar{
+    display:flex; gap:8px; overflow-x:auto; padding:12px 18px;
+    background:var(--paper); border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:1000;
+    -webkit-overflow-scrolling:touch;
+  }
+  .toplink-bar a{flex:0 0 auto; font-size:12.5px; font-weight:700; padding:7px 12px; border:1px solid var(--ink); border-radius:999px; text-decoration:none; background:var(--panel);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span> 令和8年熊本地震・非公式まとめ</div>
+    <h1>行く前に、ここで確認。<br>熊本ボランティア速報板</h1>
+    <p>「募集しているか」「どこへ行くか」「当日どう動くか」を1ページで。募集状況と断水・給水情報は公式データをそのまま表示しているので、開くたびに最新です。<b style="color:#fff;">ボランティア募集は続いています。</b></p>
+  </div>
+</header>
+
+<nav class="toplink-bar" aria-label="ページ内リンク">
+  <a href="#map-section">① 場所を探す</a>
+  <a href="#vc-list">② 募集状況</a>
+  <a href="#flow">③ 当日の流れ</a>
+  <a href="#water">④ 断水・トイレ・ごみ</a>
+  <a href="#highway">⑤ 高速無料</a>
+  <a href="#convenience">⑥ コンビニ</a>
+  <a href="#stay">⑦ 宿泊</a>
+  <a href="#sns">⑧ 現地の声</a>
+</nav>
+
+<main class="wrap">
+
+  <section id="map-section">
+    <div class="sec-head">
+      <h2>ボランティアセンターの場所</h2>
+      <span class="sec-num">01</span>
+    </div>
+    <p class="lede">災害ボランティアセンターがどのあたりにあるかを地図で確認できます。★が震源地なので、活動先が震源からどのくらいの位置にあるかもわかります。ピンの横に市町村名が出るので、次のセクションの一覧表と見比べてください。</p>
+
+    <div id="map" role="application" aria-label="熊本県 災害ボランティアセンターと震源地の地図"></div>
+    <div class="legend">
+      <div class="grp">
+        <span class="grp-title">ピン</span>
+        <span class="dot"><span class="sw" style="background:#2F6F8F"></span>災害ボランティアセンターの場所（クリックで住所・電話）</span>
+      </div>
+      <div class="grp">
+        <span class="grp-title">★</span>
+        <span class="dot"><span style="color:#C4432B; font-size:14px; line-height:1;">★</span>震源地（2026年7月28日 16時27分・M7.1）</span>
+      </div>
+    </div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">※ピンの位置は開設場所の住所から求めた<b>目安</b>です。募集状況は表示していません（→②）。断水・給水・仮設トイレ・ごみ仮置場の場所は④の支援場所マップでご確認ください。震源地の規模・深さ・震度は気象庁発表、緯度経度はUSGS発表によります。地図タイル：© OpenStreetMap contributors, © CARTO</p>
+  </section>
+
+  <section id="vc-list">
+    <div class="sec-head">
+      <h2>各市町ボランティアセンター設置一覧</h2>
+      <span class="sec-num">02</span>
+    </div>
+    <p class="lede">募集しているかどうかは、この表だけを見てください。熊本県社会福祉協議会の公式データをそのまま表示しているので、<b>ページを開くたびに自動で最新</b>になります。</p>
+
+    <div class="live-box">
+      <b>✓ 自動更新されます。</b>この表は県社協の公式システムを埋め込んだものです。市町村名をクリックすると各自治体の詳細ページ（外部サイト）へ移動します。<br>
+      <b>募集状況（受付中／募集終了など）はこの表のみに表示されます。①の地図のピンは位置確認用です。</b>
+    </div>
+
+    <div class="panel" style="padding:0; overflow:hidden;">
+      <div style="padding:14px 16px 10px;">
+        <div class="stamp live"><b>● LIVE</b>｜熊本県社会福祉協議会</div>
+      </div>
+      <iframe title="各市町災害ボランティアセンター設置一覧（熊本県社会福祉協議会）"
+        src="https://878eb4be.viewer.kintoneapp.com/public/556cd628768083b64d649f5f8a0d562b08f7cbfed694713fb54d1348d49e2461?iframe=true"
+        style="width:100%; height:700px; border:0; display:block;" loading="lazy"></iframe>
+    </div>
+    <a class="fallback-link" href="https://www.fukushi-kumamoto.or.jp/kvc/" target="_blank" rel="noopener">表が表示されない場合は県社協の一覧ページを直接開く ↗</a>
+    <noscript>
+      <p>JavaScriptが無効なため一覧を表示できません。<a href="https://www.fukushi-kumamoto.or.jp/kvc/">県社協の一覧ページ</a>をご覧ください。</p>
+    </noscript>
+
+    <details class="kana-box">
+      <summary>市町村名の読み方（ふりがな）</summary>
+      <ul class="kana-list">
+        <li><span class="k">熊本市</span><span class="y">くまもとし</span></li>
+        <li><span class="k">八代市</span><span class="y">やつしろし</span></li>
+        <li><span class="k">宇土市</span><span class="y">うとし</span></li>
+        <li><span class="k">宇城市</span><span class="y">うきし</span></li>
+        <li><span class="k">美里町</span><span class="y">みさとまち</span></li>
+        <li><span class="k">御船町</span><span class="y">みふねまち</span></li>
+        <li><span class="k">嘉島町</span><span class="y">かしままち</span></li>
+        <li><span class="k">益城町</span><span class="y">ましきまち</span></li>
+        <li><span class="k">甲佐町</span><span class="y">こうさまち</span></li>
+        <li><span class="k">氷川町</span><span class="y">ひかわ<b>ちょう</b></span></li>
+        <li><span class="k">芦北町</span><span class="y">あしきたまち</span></li>
+      </ul>
+      <p class="kana-note">※熊本県で「〜ちょう」と読む町は、氷川町・山都町・あさぎり町の3つだけです。他はすべて「〜まち」です。（出典：総務省「全国地方公共団体コード」に基づく市区町村名の読み）</p>
+    </details>
+
+    <div class="warn-box" style="margin-top:14px;">
+      <b>遠方から行く前に、募集の「対象」を必ず確認してください。</b>
+      センターによって条件が違います。実際に次のような制限が出ています。
+      <ul class="checklist" style="margin-top:8px;">
+        <li><b>居住地の制限</b>／「熊本県内在住の方」に限定して募集しているセンターがあります（嘉島町など）。県外から向かう場合は特に要確認です。</li>
+        <li><b>年齢の制限</b>／「中学生以上」とし、中学生は保護者の同意書が必要なセンターがあります。</li>
+        <li><b>予約方法の違い</b>／事前予約フォーム制、当日受付、電話のみなど、センターごとに異なります。</li>
+        <li><b>急な休止</b>／災害ごみ仮置場が使えない期間などに、センターごと休止することがあります。</li>
+      </ul>
+      条件は各センターの公式ページ・SNSに書かれています。表の市町村名か、下のまとめリンクから確認してください。
+    </div>
+
+    <div class="btn-row">
+      <a class="btn small alt" href="https://www.kab.co.jp/news/article/16779977" target="_blank" rel="noopener">各VCの受付フォーム・電話番号まとめ（KAB） ↗</a>
+      <a class="btn small alt" href="https://kumamoto-point.jp/" target="_blank" rel="noopener">くまもとアプリで申込む ↗</a>
+    </div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">※くまもとアプリは熊本市が県内の募集情報を集約したもの。アプリ自体は市外・県外在住でも登録・申込できますが、個々の募集の対象条件は上記のとおりセンターごとに異なります。</p>
+  </section>
+
+  <section id="flow">
+    <div class="sec-head">
+      <h2>ボランティア当日の流れ</h2>
+      <span class="sec-num">03</span>
+    </div>
+    <p class="lede">受付から解散までのおおまかな流れです。センターによって細部は異なるので、当日の案内に従ってください。</p>
+
+    <ol class="flow-list">
+      <li class="pre"><b>ボランティア保険の確認</b><span class="note">原則として加入が必須です。当日その場では加入できないので、前日までに、お住まいの社会福祉協議会の窓口かWEBで済ませてください。加入証は持参を。</span></li>
+      <li><b>QRコードでの申し込み登録</b><span class="note">受付でQRコードを読み取り、スマホから登録します。</span></li>
+      <li><b>グループ分け・オリエンテーション</b><span class="note">作業内容・注意事項の説明を受けます。</span></li>
+      <li><b>リーダー選定（4〜10名のチーム）</b><span class="note">チーム内で連絡役となるリーダーを決めます。</span></li>
+      <li><b>現場作業</b><span class="note">依頼者宅などで、家財の運び出し・片付けを行います。</span></li>
+      <li><b>仕分け作業</b><span class="note">運び出したものを災害ごみの区分ごとに分けます。</span></li>
+      <li><b>仮置き場への搬入</b><span class="note">トラックなど車両を持っている方のみ。</span></li>
+      <li><b>完了したら報告</b><span class="note">センターに戻って完了報告。休憩は各チームの判断で、無理のない活動を。</span></li>
+    </ol>
+
+    <div class="warn-box" style="margin-top:14px;">
+      <b>現場では、必ずリーダーと担当者の指示に従ってください。</b>
+      気づいたことがあっても、その場の判断で作業範囲を広げないでください。依頼者が「残してほしい」と考えているものが混ざっていることがあります。判断に迷うものは捨てずに、必ず依頼者かセンターに確認を。写真・動画をSNSに上げる際は、家屋の中や表札・人が写り込んでいないか確認してください。
+    </div>
+
+    <div class="warn-box" style="margin-top:14px;">
+      <b>保険は必ず事前に。</b>活動当日に現地で加入することはできません。全国どこの社会福祉協議会でも加入でき、WEB加入にも対応しています。
+      <div class="btn-row">
+        <a class="btn small" href="https://www.saigaivc.com/insurance/" target="_blank" rel="noopener">ボランティア活動保険の案内（全社協） ↗</a>
+        <a class="btn small alt" href="https://www.saigaivc.com/r8kumamoto/" target="_blank" rel="noopener">WEB加入はこちら ↗</a>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <b>持ち物の目安：</b>汚れてもよい服装・長袖／踏み抜き防止インソール入りの靴か長靴／軍手・厚手のゴム手袋／帽子／マスク・防塵マスク／ゴーグル／飲料水（多め）／昼食／タオル／携帯トイレ／健康保険証。猛暑のため、水分と塩分は必ず余分に。
+      <div class="btn-row">
+        <a class="btn small alt" href="https://www.fukushi-kumamoto.or.jp/files/libs/5070/202312061700432718.pdf" target="_blank" rel="noopener">災害ボランティアガイドブック（県社協PDF） ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="water">
+    <div class="sec-head">
+      <h2>断水・給水・トイレ・ごみ仮置場</h2>
+      <span class="sec-num">04</span>
+    </div>
+    <p class="lede">断水・給水だけでなく、仮設トイレ・災害ごみ仮置場の場所もあわせて確認できます。くまもと被災者支援ナビの支援場所マップをそのまま表示しているので、常に最新です。</p>
+
+    <div class="toilet-card">
+      <b>🚻 トイレが使えない可能性が高いエリアがあります。</b>
+      <p style="margin:8px 0 0;">断水中は水洗トイレが使用不可になる地域があります。簡易トイレの家庭備蓄率は約2割にとどまり、県が簡易トイレやトイレカーの配備を進めていますが、全ての活動先で足りているとは限りません。</p>
+      <ul class="checklist">
+        <li>携帯トイレ・簡易トイレを人数分持参する</li>
+        <li>除菌シート・ウェットティッシュ・手指消毒液を持参する</li>
+        <li>飲料水は自分の分を持参（現地の水を当てにしない）</li>
+        <li>活動先VCで「トイレの有無」を事前に確認する</li>
+      </ul>
+    </div>
+
+    <div class="live-box" style="margin-top:14px;">
+      <b>✓ 下の支援場所マップも自動更新されます。</b>くまもと被災者支援ナビの公式ページを埋め込んでいます。給水所・災害時協力井戸・仮設トイレ・災害ごみ仮置場の4種類のピンを、地図上で切り替えて確認できます。
+    </div>
+
+    <div class="panel" style="padding:0; overflow:hidden;">
+      <div style="padding:14px 16px 10px;">
+        <div class="stamp live"><b>● LIVE</b>｜くまもと被災者支援ナビ 支援場所マップ</div>
+      </div>
+      <iframe title="支援場所マップ／給水・井戸・仮設トイレ・災害ごみ仮置場（くまもと被災者支援ナビ）"
+        src="https://kumamoto-shien.jp/support-map?types=water,well,toilet,gomi"
+        style="width:100%; height:520px; border:0; display:block;" loading="lazy"></iframe>
+    </div>
+    <a class="fallback-link" href="https://kumamoto-shien.jp/support-map?types=water,well,toilet,gomi" target="_blank" rel="noopener">表示されない場合は新しいタブで開く ↗</a>
+
+    <div class="btn-row" style="margin-top:14px;">
+      <a class="btn small alt" href="https://www.mlit.go.jp/saigai/saigai_260728.html" target="_blank" rel="noopener">国交省の一次情報（被害状況報） ↗</a>
+    </div>
+  </section>
+
+  <section id="highway">
+    <div class="sec-head">
+      <h2>高速道路 無料措置のうけ方</h2>
+      <span class="sec-num">05</span>
+    </div>
+    <p class="lede">被災地の自治体等が受け入れを承諾したボランティア活動であれば、活動車両の高速道路料金が無料になります。事前準備が必要なので、出発前に済ませてください。</p>
+
+    <ol class="step-list">
+      <li><b>「災害ボランティア車両高速道路通行証明書」を入手</b>NEXCO西日本のページからダウンロード・印刷し、必要事項（氏名・車両情報・活動先VC名など）を記入します。</li>
+      <li><b>活動先を確定させる</b>受け入れ先の災害ボランティアセンターへ事前に連絡し、募集状況・受付可否を確認します（満員の場合は無効になるため要注意）。</li>
+      <li><b>行きのIC通過</b>被災地方面の指定ICで、本人確認書類（運転免許証等）と記入済み証明書を係員に提示します。</li>
+      <li><b>活動先VCで活動確認を受ける</b>活動終了後、活動先の災害ボランティアセンターで証明書に活動確認をもらいます。</li>
+      <li><b>帰りのIC通過</b>活動確認済みの証明書を、帰路の指定ICで再度提示します。</li>
+    </ol>
+
+    <div class="info-box" style="margin-top:14px;">
+      <b>対象：</b>被災した自治体等が要請または受け入れを承諾したボランティア活動に使用する車両のみが対象です。制度の詳細・証明書様式は必ず公式PDFで確認してください。
+    </div>
+
+    <div class="btn-row">
+      <a class="btn small" href="https://www.w-nexco.co.jp/emc/emcpdfs/20260731220322-01.pdf" target="_blank" rel="noopener">証明書・制度詳細PDF（NEXCO西日本） ↗</a>
+      <a class="btn small alt" href="https://www.w-nexco.co.jp/info/volunteer-info/" target="_blank" rel="noopener">NEXCO西日本 お知らせ一覧 ↗</a>
+      <a class="btn small alt" href="https://www.fukushi-kumamoto.or.jp/pages/291/detail=1/b_id=4334/r_id=2216/" target="_blank" rel="noopener">県社協の案内ページ ↗</a>
+    </div>
+    <p style="font-size:12px; color:var(--ink-soft); margin-top:10px;">問い合わせ：NEXCO西日本お客様センター　0120-924-863（フリーダイヤル）</p>
+  </section>
+
+  <section id="convenience">
+    <div class="sec-head">
+      <h2>コンビニの営業・復旧状況</h2>
+      <span class="sec-num">06</span>
+    </div>
+    <p class="lede">地震直後は各社で休業店舗が発生していましたが、8月上旬の報道時点ではほぼ営業再開しています。断水・被害の大きい地域では品切れや時短営業もあるため、店舗検索で確認してから向かうのが確実です。</p>
+
+    <div class="store-grid">
+      <div class="store-card">
+        <h4>セブン-イレブン</h4>
+        <span class="rate">約100店休業 → 15店（8/4時点）</span>
+        <p>発生直後は県内約100店舗が休業。本部社員を派遣し、1週間でほぼ営業再開。</p>
+        <a class="btn small alt" href="https://www.sej.co.jp/shop/map.html" target="_blank" rel="noopener">店舗検索 ↗</a>
+      </div>
+      <div class="store-card">
+        <h4>ローソン</h4>
+        <span class="rate">24店休業 → ほぼ全店再開（8/3時点）</span>
+        <p>発生直後は県内24店舗が休業。断水・停電の復旧に伴い順次営業再開。</p>
+        <a class="btn small alt" href="https://www.lawson.co.jp/shop/search/" target="_blank" rel="noopener">店舗検索 ↗</a>
+      </div>
+      <div class="store-card">
+        <h4>ファミリーマート</h4>
+        <span class="rate">最大39店休業 → 全店再開（8/3時点）</span>
+        <p>発生直後は県内で最大39店舗が休業。8月3日までに県内全店舗が営業再開。</p>
+        <a class="btn small alt" href="https://www.family.co.jp/shop.html" target="_blank" rel="noopener">店舗検索 ↗</a>
+      </div>
+    </div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin-top:10px;">※休業店舗数は2026年8月上旬の報道時点の値で、自動更新されません。店舗検索リンクは常に最新の情報が表示されます。</p>
+  </section>
+
+  <section id="stay">
+    <div class="sec-head">
+      <h2>宿泊・ホテル情報</h2>
+      <span class="sec-num">07</span>
+    </div>
+    <p class="lede">日帰りが難しい場合の宿泊先です。県のホテル二次避難制度は<b>被災者向け</b>のため、ボランティア自身の宿泊は自己手配が基本になります。</p>
+
+    <div class="hotel-grid">
+      <div class="hotel-card">
+        <h4>楽天トラベル（熊本県）</h4>
+        <p>熊本市内・近郊のホテル・旅館の空室を検索できます。開くたびに最新の空室状況が表示されます。</p>
+        <a class="btn small" href="https://travel.rakuten.co.jp/dm/jpn/430000/" target="_blank" rel="noopener">熊本の宿を探す ↗</a>
+      </div>
+      <div class="hotel-card">
+        <h4>じゃらんnet（熊本県）</h4>
+        <p>周辺市町村も含めて宿を比較できます。</p>
+        <a class="btn small" href="https://www.jalan.net/kankou/430000/" target="_blank" rel="noopener">熊本の宿を探す ↗</a>
+      </div>
+      <div class="hotel-card">
+        <h4>Airbnb.org 無償宿泊支援</h4>
+        <p>被災者と、現地で医療・緊急対応にあたる救援者向けの無償宿泊提供プログラム。一般ボランティアが対象になるかは要問い合わせ。</p>
+        <a class="btn small alt" href="https://www.airbnb.org/" target="_blank" rel="noopener">Airbnb.org ↗</a>
+      </div>
+      <div class="hotel-card">
+        <h4>熊本県「ホテル等避難」案内（参考）</h4>
+        <p>八代市・宇土市・宇城市・氷川町・甲佐町の<b>被災者</b>向け制度です。ボランティア自身は対象外です。</p>
+        <a class="btn small alt" href="https://www.pref.kumamoto.jp/soshiki/208/275618.html" target="_blank" rel="noopener">熊本県公式ページ ↗</a>
+      </div>
+    </div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin-top:10px;">※嘉島町など、宿泊施設を用意していないと明記しているセンターもあります。宿泊は必ずご自身で手配してください。</p>
+  </section>
+
+  <section id="sns">
+    <div class="sec-head">
+      <h2>現地の声</h2>
+      <span class="sec-num">08</span>
+    </div>
+    <p class="lede">現場のリアルタイムな様子はSNSの一次情報から。個人の投稿は状況把握の参考程度にとどめ、行動判断は上記の公式情報を優先してください。</p>
+
+    <div class="sns-cols">
+      <div class="sns-col">
+        <h3>X（旧Twitter）<span class="sns-badge">検索結果を表示</span></h3>
+        <div class="frame-box">
+          <a class="twitter-timeline" data-width="100%" data-height="480" data-theme="light"
+             href="https://twitter.com/search?q=%E7%86%8A%E6%9C%AC%E5%9C%B0%E9%9C%87%20%E3%83%9C%E3%83%A9%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2&amp;src=typed_query&amp;f=live">
+             「熊本地震 ボランティア」のX検索結果を読み込み中…
+          </a>
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
+        <a class="fallback-link" href="https://twitter.com/search?q=%E7%86%8A%E6%9C%AC%E5%9C%B0%E9%9C%87%20%E3%83%9C%E3%83%A9%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2&src=typed_query&f=live" target="_blank" rel="noopener">Xで検索結果を直接開く ↗</a>
+      </div>
+
+      <div class="sns-col">
+        <h3>Instagram<span class="sns-badge">埋め込み非対応・リンクのみ</span></h3>
+        <p style="font-size:13px; color:var(--ink-soft); margin:-4px 0 10px;">Instagramは公式のハッシュタグ埋め込み機能がないため、検索画面へのリンクのみ設置しています。</p>
+        <div class="insta-links">
+          <a href="https://www.instagram.com/explore/tags/熊本地震/" target="_blank" rel="noopener">#熊本地震 の投稿を見る <span class="arrow">↗</span></a>
+          <a href="https://www.instagram.com/explore/tags/熊本地震ボランティア/" target="_blank" rel="noopener">#熊本地震ボランティア の投稿を見る <span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>ボランティア活動にあたって：</b>災害ボランティア活動は<b>自己責任・自己完結</b>が原則です。本サイトの情報を参考にしたことで生じたいかなる損害についても、運営者は責任を負いかねます。活動は必ず災害ボランティアセンターまたは地域の受入団体を通して行い、現地では担当者の指示に従ってください。個人での直接の現場入りは、支援の重複・漏れや事故対応の遅れを招き、現場を混乱させます。</p>
+    <p><b>このサイトについて：</b>本サイトは熊本県・各市町村・社会福祉協議会・NEXCO西日本の公式サイトではありません。個人が有志で作成した非公式まとめです。地図上の位置・数値・状況は目安であり、活動前には必ず各リンク先の公式発表をご確認ください。</p>
+    <p><b>自動更新される部分：</b>②の募集状況一覧（県社協）、④の支援場所マップ／断水・給水・仮設トイレ・ごみ仮置場（くまもと被災者支援ナビ）、⑦の宿泊検索、⑥の店舗検索リンク。<b>自動更新されない部分：</b>①地図のVCピン（センターの新設・移転・廃止時のみ更新）、③の流れ・持ち物、⑤の手順、⑥の休業店舗数（2026年8月上旬の報道値）。※①の震源地は発生済みの地震の固定情報のため、そもそも更新の必要がありません。</p>
+    <p>出典：<a href="https://www.fukushi-kumamoto.or.jp/kvc/" target="_blank" rel="noopener">熊本県社会福祉協議会</a>／<a href="https://www.kab.co.jp/news/article/16779977" target="_blank" rel="noopener">KAB熊本朝日放送（VC一覧）</a>／<a href="https://kumamoto-shien.jp/about" target="_blank" rel="noopener">くまもと被災者支援ナビ</a>／<a href="https://www.w-nexco.co.jp/" target="_blank" rel="noopener">NEXCO西日本</a>／<a href="https://www.mlit.go.jp/saigai/saigai_260728.html" target="_blank" rel="noopener">国土交通省</a></p>
+    <p>誤り・古い情報のご指摘は運営者までご連絡ください。</p>
+  </footer>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin=""></script>
+<script>
+  // 地図ピンは「場所」のみを示します。募集中かどうかは②の自動更新される一覧表でご確認ください。
+  // 出典：KAB「熊本地震で災害ボランティアセンター開設進む」（2026/08/10更新）ほか各市町社協公式ページ
+  // 座標は住所からの概算です（目安）。
+  var vcData = [
+    { name: "熊本市災害ボランティアセンター", area: "熊本市", kana: "くまもと", kanaFull: "くまもとし", lat: 32.800639, lng: 130.697239,
+      place: "熊本市社会福祉協議会（中央区新町2丁目4-27 熊本市健康センター新町分室1階）",
+      tel: "080-1535-1141／080-1532-0617",
+      source: "https://www.city.kumamoto.jp/kiji00372117/index.html", sourceLabel: "熊本市公式ページ" },
+
+    { name: "八代市災害ボランティアセンター", area: "八代市", kana: "やつしろ", kanaFull: "やつしろし", lat: 32.507463, lng: 130.601858,
+      place: "八代市社会福祉協議会（詳細は公式ページで要確認／位置は市役所付近の目安）",
+      tel: "080-5065-9461／080-5065-9219",
+      source: "https://www.facebook.com/yatsushiroshakyo/", sourceLabel: "八代市社協Facebook" },
+
+    { name: "宇土市災害ボランティアセンター", area: "宇土市", kana: "うと", kanaFull: "うとし", lat: 32.687153, lng: 130.658623,
+      place: "旧教育委員会（浦田町44番地）",
+      tel: "0964-23-3756",
+      source: "https://www.utoshakyou.jp/volunteer2026.html", sourceLabel: "宇土市社協公式ページ" },
+
+    { name: "宇城市災害ボランティアセンター", area: "宇城市", kana: "うき", kanaFull: "うきし", lat: 32.640689, lng: 130.701374,
+      place: "熊本県博物館ネットワークセンター多目的広場（松橋町豊福1695）",
+      tel: "080-5063-9672／0964-32-1316",
+      source: "https://www.shakyou-uki.jp/oshirase/12239/", sourceLabel: "宇城市社協公式ページ" },
+
+    { name: "美里町災害ボランティアセンター", area: "美里町", kana: "みさと", kanaFull: "みさとまち", lat: 32.621701, lng: 130.868763,
+      place: "美里町役場砥用庁舎内（三和420）",
+      tel: "080-5063-9634／0964-47-0065",
+      source: "https://misatoshakyo.or.jp/pages/26/", sourceLabel: "美里町社協公式ページ" },
+
+    { name: "御船町災害ボランティアセンター", area: "御船町", kana: "みふね", kanaFull: "みふねまち", lat: 32.718300, lng: 130.805800,
+      place: "御船高校セミナーハウス（木倉1253）",
+      tel: "070-7628-1360／070-4783-6141",
+      source: "https://mifune-shakyo.jp/pages/51/", sourceLabel: "御船町社協公式ページ" },
+
+    { name: "嘉島町災害ボランティアセンター", area: "嘉島町", kana: "かしま", kanaFull: "かしままち", lat: 32.739200, lng: 130.753000,
+      place: "嘉島町福祉センター（上益城郡嘉島町上島551番地）",
+      tel: "096-237-2981",
+      source: "http://kashima-shakyo.or.jp/publics/index/1", sourceLabel: "嘉島町社協公式ページ" },
+
+    { name: "益城町災害ボランティアセンター", area: "益城町", kana: "ましき", kanaFull: "ましきまち", lat: 32.789900, lng: 130.805500,
+      place: "益城町社会福祉協議会（惣領1476-1 YPみらいえ内）",
+      tel: "080-8427-8981／090-4583-1922",
+      source: "https://www.mashiki-shakyo.or.jp/news/", sourceLabel: "益城町社協公式ページ" },
+
+    { name: "甲佐町災害ボランティアセンター", area: "甲佐町", kana: "こうさ", kanaFull: "こうさまち", lat: 32.656700, lng: 130.789800,
+      place: "甲佐町老人いこいの家（岩下24）",
+      tel: "096-234-1192",
+      source: "https://kosa-shakyo.or.jp/pages/50/", sourceLabel: "甲佐町社協公式ページ" },
+
+    { name: "氷川町災害ボランティアセンター", area: "氷川町", kana: "ひかわ", kanaFull: "ひかわちょう", lat: 32.584700, lng: 130.675300,
+      place: "氷川町屋内ゲートボール場（島地636番地1）",
+      tel: "080-5068-9417／080-5068-9229",
+      source: "https://hikawa-syakyo.jp/news/", sourceLabel: "氷川町社協公式ページ" },
+
+    { name: "芦北町災害ボランティアセンター", area: "芦北町", kana: "あしきた", kanaFull: "あしきたまち", lat: 32.342300, lng: 130.664400,
+      place: "芦北町社会福祉協議会（詳細は公式ページで要確認／位置は役場付近の目安）",
+      tel: "080-5799-8377／080-5799-8379",
+      source: "https://www.ashikita-shakyo.com/news/", sourceLabel: "芦北町社協公式ページ" }
+  ];
+  var VC_PIN_COLOR = "#2F6F8F";
+
+  // 震源地（固定データ・更新不要）
+  // 規模・深さ・震度は気象庁、緯度経度はUSGS（気象庁は緯度経度を公表資料で明示していないため）
+  var epicenter = {
+    lat: 32.6817, lng: 130.7217,
+    datetime: "2026年7月28日 16時27分頃",
+    jma: "気象庁：M7.1／深さ16km（熊本県熊本地方）",
+    usgs: "USGS：Mw6.8／深さ10km",
+    shindo: "最大震度7：宇城市・氷川町",
+    note: "日奈久断層帯の活動による地震である可能性が高いとされています。",
+    source: "https://www.jma.go.jp/jma/menu/20260728_kumamoto_jishin.html",
+    sourceLabel: "気象庁 令和8年熊本地震ポータル"
+  };
+
+  // 断水・給水・仮設トイレ・ごみ仮置場は、④のくまもと被災者支援ナビ「支援場所マップ」埋め込みに一本化しています。
+  // （手動メンテの断水エリア円は自動更新されないため廃止しました）
+
+  var map = L.map('map', { scrollWheelZoom: false }).setView([32.66, 130.72], 10);
+
+  // フラットで見やすい地図タイル（CARTO Positron）
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  }).addTo(map);
+
+  var vcLayer = L.layerGroup().addTo(map);
+
+  function vcIcon(color){
+    return L.divIcon({
+      className: '',
+      html: '<div style="width:22px;height:22px;border-radius:50% 50% 50% 0;background:' + color + ';border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);transform:rotate(-45deg);"></div>',
+      iconSize: [22,22],
+      iconAnchor: [11,22],
+      popupAnchor: [0,-20]
+    });
+  }
+
+  vcData.forEach(function(v){
+    var marker = L.marker([v.lat, v.lng], { icon: vcIcon(VC_PIN_COLOR) }).addTo(vcLayer);
+    marker.bindTooltip(
+      v.area + '<span class="kana">（' + v.kana + '）</span>',
+      { permanent: true, direction: "right", offset: [10, -12], className: "vc-tooltip" }
+    );
+    marker.bindPopup(
+      "<b>" + v.name + "</b>" +
+      "<br><span style='color:#8A867A;font-size:11.5px;'>" + v.area + "（" + v.kanaFull + "）</span>" +
+      "<br>" + v.place +
+      "<br>電話：" + v.tel +
+      "<br><b style='color:#2F6F8F;'>募集中かどうかは「②各市町ボランティアセンター設置一覧」で確認</b>" +
+      "<br><a class='popup-link' href='" + v.source + "' target='_blank' rel='noopener'>" + v.sourceLabel + " ↗</a>"
+    );
+  });
+
+  // 震源地マーカー（★）
+  var epiIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;' +
+          'font-size:25px;line-height:1;color:#C4432B;' +
+          'text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff,0 0 3px #fff,0 1px 3px rgba(0,0,0,.4);">★</div>',
+    iconSize: [30,30],
+    iconAnchor: [15,15],
+    popupAnchor: [0,-13]
+  });
+
+  L.circle([epicenter.lat, epicenter.lng], {
+    radius: 4000, color: "#C4432B", weight: 1, dashArray: "4 3",
+    fillColor: "#C4432B", fillOpacity: 0.10, interactive: false
+  }).addTo(map);
+
+  L.marker([epicenter.lat, epicenter.lng], { icon: epiIcon, zIndexOffset: 1000 })
+    .addTo(map)
+    .bindTooltip("震源地", { permanent: true, direction: "right", offset: [14, 0], className: "epi-tooltip" })
+    .bindPopup(
+      "<b>令和8年熊本地震 震源地</b>" +
+      "<br>" + epicenter.datetime +
+      "<br>" + epicenter.jma +
+      "<br>" + epicenter.shindo +
+      "<br><span style='color:#8A867A;font-size:11px;'>" + epicenter.note + "</span>" +
+      "<br><span style='color:#8A867A;font-size:11px;'>" + epicenter.usgs + "／位置はUSGS発表の震央座標</span>" +
+      "<br><a class='popup-link' href='" + epicenter.source + "' target='_blank' rel='noopener'>" + epicenter.sourceLabel + " ↗</a>"
+    );
+
+  // 全ピン＋震源地が収まるように自動調整
+  map.fitBounds(
+    vcData.map(function(v){ return [v.lat, v.lng]; }).concat([[epicenter.lat, epicenter.lng]]),
+    { padding: [30, 30] }
+  );
+</script>
+
+</body>
+</html>
