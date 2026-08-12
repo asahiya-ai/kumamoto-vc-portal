@@ -156,6 +156,22 @@
   }
   .live-box b{color:var(--green);}
 
+  .report-box{
+    background:var(--gray-soft); border:1px solid var(--line);
+    border-left:5px solid var(--ink);
+    color:var(--ink); padding:13px 15px; border-radius:var(--radius);
+    font-size:13.5px; margin-bottom:18px;
+  }
+  .report-box b{color:var(--ink);}
+  .report-box p{margin:8px 0 0;}
+  .report-box .caution{color:var(--alert);}
+  .report-date{
+    display:inline-block; font-family:"JetBrains Mono",monospace;
+    font-size:11px; letter-spacing:.06em; color:var(--ink-soft);
+    background:var(--panel); border:1px solid var(--line);
+    padding:2px 8px; border-radius:999px; margin-bottom:9px;
+  }
+
   .toilet-card{
     background:var(--amber-soft); border:1px solid var(--amber);
     padding:14px 16px; border-radius:var(--radius); font-size:13.5px; color:#5C4110;
@@ -421,6 +437,20 @@
         <a class="btn small alt" href="https://www.fukushi-kumamoto.or.jp/files/libs/5070/202312061700432718.pdf" target="_blank" rel="noopener">災害ボランティアガイドブック（県社協PDF） ↗</a>
       </div>
     </div>
+
+    <div class="report-box">
+      <div class="report-date">現地で確認｜2026年8月12日時点</div>
+      <b>個人で参加する方へ：支援物資の大量持ち込みは不要です。</b>
+      <p>県内のコンビニはほぼ営業を再開しており、食料も飲み物も現地で調達できます（⑥参照）。飲料水や重機などの資材も、全国の自治体から支援が届いています。個人が水や物資を大量に積んで運ぶ必要はありません。積載量は、むしろ次の「運搬」に使うほうが役立ちます。</p>
+      <p><b class="caution">ただし、自分が活動中に飲む水は別です。</b>猛暑のため、上の「持ち物の目安」のとおり飲料水と塩分は必ず多めに持参してください。現地の給水所や支援物資は、被災された方のためのものです。</p>
+    </div>
+
+    <div class="report-box">
+      <div class="report-date">現地で確認｜2026年8月12日時点</div>
+      <b>🛻 軽トラックなど、荷台のある車での参加が喜ばれています。</b>
+      <p>上の流れ⑦のとおり、仕分けた災害ごみを仮置場へ運ぶ作業は、荷台のある車両で来た方だけが担当できます。人手に対して運搬できる車両が不足しがちで、運び出したごみが現場に滞留してしまうことがあります。</p>
+      <p>軽トラック・軽バン・ハイエースなどで参加できる方は、<b>受付時に「荷台のある車で来た」と伝えてください。</b>搬入の担当に回してもらえます。車両で参加する場合も、⑤の高速道路無料措置の対象です。</p>
+    </div>
   </section>
 
   <section id="water">
@@ -467,6 +497,17 @@
     </div>
     <p class="lede">被災地の自治体等が受け入れを承諾したボランティア活動であれば、活動車両の高速道路料金が無料になります。事前準備が必要なので、出発前に済ませてください。</p>
 
+    <div class="report-box">
+      <div class="report-date">現地で確認｜2026年8月12日時点</div>
+      <b>🚗 熊本市内までの道路は、通常どおり通行できました。</b>
+      <p>高速道路は大きな規制もなくスムーズに流れています。一般道も、通行止め区間を除けば正常に機能しています。<b>普通車はもちろん、軽自動車でも問題なく現地まで到達でき、活動に参加できました。</b>四輪駆動や特別な装備がなければ行けない、ということはありません。</p>
+      <p>ただし、通行止めや規制は日々変わります。出発前に下記で最新の規制状況を確認してください。</p>
+      <div class="btn-row">
+        <a class="btn small alt" href="https://www.jartic.or.jp/" target="_blank" rel="noopener">日本道路交通情報センター（規制情報） ↗</a>
+        <a class="btn small alt" href="https://www.w-nexco.co.jp/traffic_info/" target="_blank" rel="noopener">NEXCO西日本 交通情報 ↗</a>
+      </div>
+    </div>
+
     <ol class="step-list">
       <li><b>「災害ボランティア車両高速道路通行証明書」を入手</b>NEXCO西日本のページからダウンロード・印刷し、必要事項（氏名・車両情報・活動先VC名など）を記入します。</li>
       <li><b>活動先を確定させる</b>受け入れ先の災害ボランティアセンターへ事前に連絡し、募集状況・受付可否を確認します（満員の場合は無効になるため要注意）。</li>
@@ -492,7 +533,7 @@
       <h2>コンビニの営業・復旧状況</h2>
       <span class="sec-num">06</span>
     </div>
-    <p class="lede">地震直後は各社で休業店舗が発生していましたが、8月上旬の報道時点ではほぼ営業再開しています。断水・被害の大きい地域では品切れや時短営業もあるため、店舗検索で確認してから向かうのが確実です。</p>
+    <p class="lede">地震直後は各社で休業店舗が発生していましたが、8月上旬の報道時点ではほぼ営業再開しています。断水・被害の大きい地域では品切れや時短営業もあるため、店舗検索で確認してから向かうのが確実です。<b>コンビニが機能しているため、個人参加の方が食料や飲み物を大量に持ち込む必要はありません（活動中にご自身が飲む水は別途、多めに必要です）。</b></p>
 
     <div class="store-grid">
       <div class="store-card">
