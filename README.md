@@ -78,38 +78,29 @@ https://kumamoto-shien.jp/support-map?types=water,well,toilet,gomi
 - [NEXCO西日本 災害ボランティア車両関連のお知らせ](https://www.w-nexco.co.jp/info/volunteer-info/)（高速道路無料措置）
 - [くまもとアプリ](https://kumamoto-point.jp/)（熊本市による県内募集情報の集約・申込）
 
-## Gitでの管理・GitHub Pages公開手順
+## 公開先・Gitでの管理
 
-このフォルダで以下を実行してください。
+**公開URL：** https://asahiya-ai.com/kumamoto-vc-portal/
 
-```bash
-cd C:\Users\USER\Desktop\asahiya\hp\kumamoto
-git init
-git add .
-git commit -m "初回コミット：熊本ボランティア速報板"
-```
+| 項目 | 内容 |
+|---|---|
+| リポジトリ | https://github.com/asahiya-ai/kumamoto-vc-portal （Public） |
+| ブランチ | `main` |
+| Pages設定 | Deploy from a branch ／ `main` ／ `/(root)` ／ HTTPS強制 |
 
-GitHub上に新規リポジトリ（例：`kumamoto-vc-portal`）を作成後：
+`asahiya-ai.github.io/kumamoto-vc-portal/` でもアクセスできますが、アカウントのユーザーサイト（`asahiya-ai.github.io`）に独自ドメイン `asahiya-ai.com` が設定されているため、上記の独自ドメイン側へリダイレクトされます。**告知に載せるURLは `https://asahiya-ai.com/kumamoto-vc-portal/` を使ってください。**
 
-```bash
-git branch -M main
-git remote add origin https://github.com/【あなたのアカウント】/kumamoto-vc-portal.git
-git push -u origin main
-```
+### 更新のしかた
 
-GitHub Pages公開設定：
-
-1. リポジトリの **Settings → Pages** を開く
-2. **Source** を「Deploy from a branch」、**Branch** を `main` / `/(root)` に設定
-3. 数分後に `https://【あなたのアカウント】.github.io/kumamoto-vc-portal/` で公開されます
-
-以降の更新：
+`index.html` を編集して、このフォルダで以下を実行すると1〜2分で本番に反映されます。
 
 ```bash
 git add .
 git commit -m "VC情報を更新"
 git push
 ```
+
+反映状況は **リポジトリの Actions タブ**、またはコミット横のチェックマークで確認できます。
 
 ## 免責
 
