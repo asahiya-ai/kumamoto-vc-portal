@@ -172,46 +172,6 @@
     padding:2px 8px; border-radius:999px; margin-bottom:9px;
   }
 
-  /* ▼▼▼ お盆限定ブロック用スタイル：2026年8月17日以降は、この .obon-* 一式をまとめて削除してください ▼▼▼ */
-  .obon{
-    background:var(--panel); border:1px solid var(--line);
-    border-top:5px solid var(--amber);
-    border-radius:var(--radius);
-    padding:16px 16px 18px; margin:28px 0 26px;
-  }
-  .obon-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin-bottom:12px;}
-  .obon-head h2{
-    font-family:"Zen Kaku Gothic New",sans-serif;
-    font-weight:700; font-size:19px; margin:0;
-  }
-  .obon-grid{display:grid; grid-template-columns:1fr; gap:12px;}
-  @media (min-width:640px){ .obon-grid{grid-template-columns:1fr 1.5fr;} }
-  .obon-card{
-    border:1px solid var(--line); border-radius:var(--radius);
-    padding:12px 14px; background:var(--paper);
-  }
-  .obon-card.ok{border-left:4px solid var(--green);}
-  .obon-card.stop{border-left:4px solid var(--alert);}
-  .obon-card-title{font-weight:700; font-size:13px; letter-spacing:.04em; margin-bottom:9px;}
-  .obon-card.ok .obon-card-title{color:var(--green);}
-  .obon-card.stop .obon-card-title{color:var(--alert);}
-  .obon-list{
-    list-style:none; margin:0; padding:0;
-    display:flex; flex-direction:column; gap:5px; font-size:13.5px;
-  }
-  .obon-list li{
-    display:flex; justify-content:space-between; align-items:baseline; gap:12px;
-    border-bottom:1px dotted var(--line); padding-bottom:5px;
-  }
-  .obon-list li:last-child{border-bottom:0; padding-bottom:0;}
-  .obon-when{
-    font-family:"JetBrains Mono",monospace; font-size:12px;
-    color:var(--alert); white-space:nowrap;
-  }
-  .obon-note{font-size:12.5px; color:var(--ink-soft); margin:12px 0 0;}
-  .obon-sub{font-size:13px; margin:10px 0 0;}
-  /* ▲▲▲ お盆限定ブロック用スタイル ここまで ▲▲▲ */
-
   .toilet-card{
     background:var(--amber-soft); border:1px solid var(--amber);
     padding:14px 16px; border-radius:var(--radius); font-size:13.5px; color:#5C4110;
@@ -377,60 +337,6 @@
     </div>
     <p style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">※ピンの位置は開設場所の住所から求めた<b>目安</b>です。募集状況は表示していません（→②）。断水・給水・仮設トイレ・ごみ仮置場の場所は④の支援場所マップでご確認ください。震源地の規模・深さ・震度は気象庁発表、緯度経度はUSGS発表によります。地図タイル：© OpenStreetMap contributors, © CARTO</p>
   </section>
-
-  <!-- ▼▼▼ お盆限定ブロック：2026年8月17日以降は、このコメントから対になる終了コメントまでを削除してください（CSSの .obon-* 一式も同様） ▼▼▼ -->
-  <div class="obon" id="obon">
-    <div class="obon-head">
-      <h2>お盆期間の活動状況</h2>
-      <span class="report-date">熊本県社協 発表｜2026年8月12日時点</span>
-    </div>
-
-    <div class="warn-box">
-      <b>これは手入力の情報です。</b>お盆期間は活動を休止するセンターがあるため、熊本県社会福祉協議会が2026年8月12日に発表した内容を臨時で掲載しています。<b>出発前には必ず、下の②の公式一覧表で最新の募集状況をご確認ください。</b>
-    </div>
-
-    <div class="obon-grid">
-      <div class="obon-card ok">
-        <div class="obon-card-title">● 活動中</div>
-        <ul class="obon-list">
-          <li>熊本市</li>
-          <li>八代市</li>
-          <li>宇城市</li>
-          <li>美里町</li>
-        </ul>
-      </div>
-      <div class="obon-card stop">
-        <div class="obon-card-title">● 活動休止</div>
-        <ul class="obon-list">
-          <li>宇土市<span class="obon-when">8/12（水）</span></li>
-          <li>氷川町<span class="obon-when">8/13（木）</span></li>
-          <li>御船町<span class="obon-when">8/14（金）〜 8/15（土）</span></li>
-          <li>甲佐町<span class="obon-when">8/15（土）〜 8/16（日）</span></li>
-          <li>芦北町<span class="obon-when">8/13（木）〜 8/16（日）</span></li>
-          <li>嘉島町<span class="obon-when">8/11（火）〜 8/16（日）</span></li>
-          <li>益城町<span class="obon-when">8/11（火）〜 8/16（日）</span></li>
-        </ul>
-      </div>
-    </div>
-    <p class="obon-note">※活動休止の期間中も、<b>相談の受付と現地調査は継続</b>されています（熊本県社会福祉協議会）。</p>
-
-    <div class="info-box" style="margin-top:16px; margin-bottom:0;">
-      <b>▸ 予約を受付中のセンター（2026年8月12日 午後6時時点）</b><br>
-      熊本県社協からの事前登録者向けメールでお知らせがあったものです。<b>対象となる活動日・定員は各フォームでご確認ください。</b>上の「活動休止」と重なるセンターもあります。
-      <div class="btn-row">
-        <a class="btn small" href="https://docs.google.com/forms/d/e/1FAIpQLScvW0q4k0KyzCaRSk85S7sangRK8lRUduhvVHA33MTibvYfPA/viewform" target="_blank" rel="noopener">美里町VC 予約フォーム ↗</a>
-        <a class="btn small" href="https://9c3d4cf9.form.kintoneapp.com/public/saigaivc-yoyaku-08-mashiki" target="_blank" rel="noopener">益城町VC 予約フォーム ↗</a>
-      </div>
-      <p class="obon-sub"><b>嘉島町</b>：8月17日（月）以降の活動申込を、8月13日（木）から募集開始と公式ページに案内があります。</p>
-    </div>
-
-    <div class="btn-row" style="margin-top:14px;">
-      <a class="btn small alt" href="https://www.fukushi-kumamoto.or.jp/pages/291/detail=1/b_id=4334/r_id=2231#block4334-2231" target="_blank" rel="noopener">お盆期間の活動状況（県社協） ↗</a>
-      <a class="btn small alt" href="https://drive.google.com/file/d/1nvh0w_2JDLhGFlEBFOo5TPnxxFssQ5yf/view" target="_blank" rel="noopener">活動状況の一覧PDF ↗</a>
-      <a class="btn small alt" href="https://www.fukushi-kumamoto.or.jp/kvc/" target="_blank" rel="noopener">熊本県災害ボランティア情報 ↗</a>
-    </div>
-  </div>
-  <!-- ▲▲▲ お盆限定ブロック ここまで ▲▲▲ -->
 
   <section id="vc-list">
     <div class="sec-head">
