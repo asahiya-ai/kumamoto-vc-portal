@@ -172,6 +172,33 @@
     padding:2px 8px; border-radius:999px; margin-bottom:9px;
   }
 
+  .src-block{margin-top:20px;}
+  .src-title{
+    font-family:"Zen Kaku Gothic New",sans-serif;
+    font-weight:700; font-size:15.5px; margin:0 0 8px;
+  }
+  .src-lede{font-size:13px; color:var(--ink-soft); margin:0 0 12px;}
+  .src-lede b{color:var(--ink);}
+  .src-list{
+    list-style:none; margin:0; padding:0;
+    display:grid; grid-template-columns:1fr; gap:8px;
+  }
+  @media (min-width:560px){ .src-list{grid-template-columns:1fr 1fr;} }
+  @media (min-width:860px){ .src-list{grid-template-columns:1fr 1fr 1fr;} }
+  .src-list li{
+    background:var(--panel); border:1px solid var(--line);
+    border-left:3px solid var(--water); border-radius:var(--radius);
+    padding:9px 12px;
+  }
+  .src-area{font-weight:700; font-size:14px;}
+  .src-area .kana{font-weight:400; font-size:11px; color:var(--ink-soft);}
+  .src-list a{font-size:12.5px; text-decoration:underline;}
+  .src-tel{
+    display:block; font-family:"JetBrains Mono",monospace;
+    font-size:11.5px; color:var(--ink-soft); margin-top:3px;
+  }
+  .src-caution{display:block; font-size:11.5px; color:var(--alert); margin-top:4px;}
+
   .toilet-card{
     background:var(--amber-soft); border:1px solid var(--amber);
     padding:14px 16px; border-radius:var(--radius); font-size:13.5px; color:#5C4110;
@@ -391,6 +418,15 @@
         <li><b>急な休止</b>／災害ごみ仮置場が使えない期間などに、センターごと休止することがあります。</li>
       </ul>
       条件は各センターの公式ページ・SNSに書かれています。表の市町村名か、下のまとめリンクから確認してください。
+    </div>
+
+    <div class="src-block">
+      <h3 class="src-title">各センターの公式お知らせページ（募集の一次情報）</h3>
+      <p class="src-lede">募集はセンターごとに<b>期間を区切って行われ、定員に達すると数日で締め切られます</b>。「第2期」「8月21日〜27日」のように募集の単位そのものが変わっていくため、申込フォームの直リンクはすぐ無効になります。下は各社協・自治体の<b>お知らせページ</b>で、募集のたびに更新される一次情報です。<b>本サイトでは募集中かどうかの判定はしていません。</b>必ずリンク先で最新の募集回と申込方法をご確認ください。</p>
+      <ul class="src-list" id="src-list"></ul>
+      <noscript>
+        <p style="font-size:13px;">JavaScriptが無効なため一覧を表示できません。<a href="https://www.fukushi-kumamoto.or.jp/kvc/">熊本県災害ボランティア情報</a>から各センターのページをご確認ください。</p>
+      </noscript>
     </div>
 
     <div class="btn-row">
@@ -645,7 +681,8 @@
     { name: "八代市災害ボランティアセンター", area: "八代市", kana: "やつしろ", kanaFull: "やつしろし", lat: 32.507463, lng: 130.601858,
       place: "八代市社会福祉協議会（詳細は公式ページで要確認／位置は市役所付近の目安）",
       tel: "080-5065-9461／080-5065-9219",
-      source: "https://www.facebook.com/yatsushiroshakyo/", sourceLabel: "八代市社協Facebook" },
+      source: "https://www.facebook.com/yatsushiroshakyo/", sourceLabel: "八代市社協Facebook",
+      note: "情報発信がFacebookのみです。アカウントがないと表示されない場合があります。" },
 
     { name: "宇土市災害ボランティアセンター", area: "宇土市", kana: "うと", kanaFull: "うとし", lat: 32.687153, lng: 130.658623,
       place: "旧教育委員会（浦田町44番地）",
@@ -670,7 +707,8 @@
     { name: "嘉島町災害ボランティアセンター", area: "嘉島町", kana: "かしま", kanaFull: "かしままち", lat: 32.739200, lng: 130.753000,
       place: "嘉島町福祉センター（上益城郡嘉島町上島551番地）",
       tel: "096-237-2981",
-      source: "http://kashima-shakyo.or.jp/publics/index/1", sourceLabel: "嘉島町社協公式ページ" },
+      source: "http://kashima-shakyo.or.jp/publics/index/1", sourceLabel: "嘉島町社協公式ページ",
+      note: "サイトの証明書の設定により、ブラウザに警告が出る場合があります。" },
 
     { name: "益城町災害ボランティアセンター", area: "益城町", kana: "ましき", kanaFull: "ましきまち", lat: 32.789900, lng: 130.805500,
       place: "益城町社会福祉協議会（惣領1476-1 YPみらいえ内）",
@@ -781,6 +819,23 @@
     vcData.map(function(v){ return [v.lat, v.lng]; }).concat([[epicenter.lat, epicenter.lng]]),
     { padding: [30, 30] }
   );
+
+  // ②「各センターの公式お知らせページ」一覧を vcData から生成する。
+  // リンクを地図ピンと一覧で二重に持たないため。VCを追加すれば一覧にも自動で載る。
+  // 募集中かどうかの判定は意図的に行わない（数日で締め切られるため手入力だと嘘になる）。
+  (function(){
+    var mount = document.getElementById('src-list');
+    if (!mount) return;
+    mount.innerHTML = vcData.map(function(v){
+      return '<li>' +
+        '<span class="src-area">' + v.area +
+          '<span class="kana">（' + v.kanaFull + '）</span></span><br>' +
+        '<a href="' + v.source + '" target="_blank" rel="noopener">' + v.sourceLabel + ' ↗</a>' +
+        '<span class="src-tel">TEL ' + v.tel + '</span>' +
+        (v.note ? '<span class="src-caution">※' + v.note + '</span>' : '') +
+      '</li>';
+    }).join('');
+  })();
 </script>
 
 </body>
