@@ -199,6 +199,41 @@
   }
   .src-caution{display:block; font-size:11.5px; color:var(--alert); margin-top:4px;}
 
+  /* ▼▼▼ 募集中センター限定ブロック用スタイル：2026年8月31日以降は、この .recruit-* 一式をまとめて削除してください ▼▼▼ */
+  .recruit{
+    background:var(--panel); border:1px solid var(--line);
+    border-top:5px solid var(--green);
+    border-radius:var(--radius);
+    padding:16px 16px 18px; margin:28px 0 26px;
+  }
+  .recruit-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin-bottom:10px;}
+  .recruit-head h2{
+    font-family:"Zen Kaku Gothic New",sans-serif;
+    font-weight:700; font-size:19px; margin:0;
+  }
+  .recruit-lede{font-size:13.5px; color:var(--ink-soft); margin:0 0 14px;}
+  .recruit-lede b{color:var(--ink);}
+  .recruit-lede .caution{color:var(--alert);}
+  .recruit-grid{display:grid; grid-template-columns:1fr; gap:12px;}
+  @media (min-width:640px){ .recruit-grid{grid-template-columns:1fr 1fr;} }
+  .recruit-card{
+    border:1px solid var(--line); border-left:4px solid var(--green);
+    border-radius:var(--radius); padding:13px 14px 14px; background:var(--paper);
+  }
+  .recruit-area{font-weight:700; font-size:15px; line-height:1.5;}
+  .recruit-when{
+    font-family:"JetBrains Mono",monospace; font-size:12.5px;
+    color:var(--water); margin:6px 0 10px;
+  }
+  .recruit-need{
+    font-size:12.5px; color:#5C4110; background:var(--amber-soft);
+    border:1px solid var(--amber); border-radius:var(--radius);
+    padding:8px 10px; margin:10px 0 0;
+  }
+  .recruit-note{font-size:12.5px; color:var(--ink-soft); margin:14px 0 0;}
+  .recruit-note b{color:var(--ink);}
+  /* ▲▲▲ 募集中センター限定ブロック用スタイル ここまで ▲▲▲ */
+
   .toilet-card{
     background:var(--amber-soft); border:1px solid var(--amber);
     padding:14px 16px; border-radius:var(--radius); font-size:13.5px; color:#5C4110;
@@ -364,6 +399,33 @@
     </div>
     <p style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">※ピンの位置は開設場所の住所から求めた<b>目安</b>です。募集状況は表示していません（→②）。断水・給水・仮設トイレ・ごみ仮置場の場所は④の支援場所マップでご確認ください。震源地の規模・深さ・震度は気象庁発表、緯度経度はUSGS発表によります。地図タイル：© OpenStreetMap contributors, © CARTO</p>
   </section>
+
+  <!-- ▼▼▼ 募集中センター限定ブロック：2026年8月31日以降は、このコメントから対になる終了コメントまでを削除してください（CSSの .recruit-* 一式も同様） ▼▼▼ -->
+  <div class="recruit" id="recruit">
+    <div class="recruit-head">
+      <h2>いま募集中のボランティアセンター</h2>
+      <span class="report-date">熊本県社協からの案内｜2026年8月19日時点</span>
+    </div>
+    <p class="recruit-lede">県社協の案内に、<b>活動日が決まっている募集</b>として載っていたセンターです。<b class="caution">定員に達し次第、活動日を待たずに受付は終了します。</b>また、ここに無いセンターでも新たに募集が始まることがあります。申込む前に必ず②の一覧表と、各センターの公式ページ（②の下のリンク集）で最新の状況をご確認ください。</p>
+
+    <div class="recruit-grid">
+      <div class="recruit-card">
+        <div class="recruit-area">美里町災害ボランティアセンター</div>
+        <div class="recruit-when">活動日｜8月22日（土）〜 8月30日（日）</div>
+        <a class="btn small" href="https://docs.google.com/forms/d/e/1FAIpQLScdXEhsFmqI0iLUShkH_1VJs_IitBK_0ch7XiVha8TrNBf4sA/viewform" target="_blank" rel="noopener">申込フォームを開く ↗</a>
+      </div>
+
+      <div class="recruit-card">
+        <div class="recruit-area">益城町災害ボランティアセンター</div>
+        <div class="recruit-when">活動日｜8月24日（月）〜 8月28日（金）</div>
+        <a class="btn small" href="https://9c3d4cf9.form.kintoneapp.com/public/saigaivc-yoyaku-08-mashiki" target="_blank" rel="noopener">申込フォームを開く ↗</a>
+        <p class="recruit-need">🛻 <b>運搬車両が不足しています。</b>軽トラックなど荷台のある車で参加できる方のお力を、県社協が特に呼びかけています。車での参加については③をご覧ください。</p>
+      </div>
+    </div>
+
+    <p class="recruit-note">県社協の発表によると、今回の地震での災害ボランティア参加者は<b>のべ1万人を超えました</b>。募集はこの先も続きます。</p>
+  </div>
+  <!-- ▲▲▲ 募集中センター限定ブロック ここまで ▲▲▲ -->
 
   <section id="vc-list">
     <div class="sec-head">
@@ -660,7 +722,7 @@
   <footer>
     <p><b>ボランティア活動にあたって：</b>災害ボランティア活動は<b>自己責任・自己完結</b>が原則です。本サイトの情報を参考にしたことで生じたいかなる損害についても、運営者は責任を負いかねます。活動は必ず災害ボランティアセンターまたは地域の受入団体を通して行い、現地では担当者の指示に従ってください。個人での直接の現場入りは、支援の重複・漏れや事故対応の遅れを招き、現場を混乱させます。</p>
     <p><b>このサイトについて：</b>本サイトは熊本県・各市町村・社会福祉協議会・NEXCO西日本の公式サイトではありません。個人が有志で作成した非公式まとめです。地図上の位置・数値・状況は目安であり、活動前には必ず各リンク先の公式発表をご確認ください。</p>
-    <p><b>自動更新される部分：</b>②の募集状況一覧（県社協）、④の支援場所マップ／断水・給水・仮設トイレ・ごみ仮置場（くまもと被災者支援ナビ）、⑦の宿泊検索、⑥の店舗検索リンク。<b>自動更新されない部分：</b>①地図のVCピン（センターの新設・移転・廃止時のみ更新）、③の流れ・持ち物、⑤の手順、⑥の休業店舗数（2026年8月上旬の報道値）。※①の震源地は発生済みの地震の固定情報のため、そもそも更新の必要がありません。</p>
+    <p><b>自動更新される部分：</b>②の募集状況一覧（県社協）、④の支援場所マップ／断水・給水・仮設トイレ・ごみ仮置場（くまもと被災者支援ナビ）、⑦の宿泊検索、⑥の店舗検索リンク。<b>自動更新されない部分：</b>②の直前「いま募集中のボランティアセンター」（2026年8月19日時点の県社協案内・手入力／8月31日に削除予定）、①地図のVCピン（センターの新設・移転・廃止時のみ更新）、③の流れ・持ち物、⑤の手順、⑥の休業店舗数（2026年8月上旬の報道値）。※①の震源地は発生済みの地震の固定情報のため、そもそも更新の必要がありません。</p>
     <p>出典：<a href="https://www.fukushi-kumamoto.or.jp/kvc/" target="_blank" rel="noopener">熊本県社会福祉協議会</a>／<a href="https://www.kab.co.jp/news/article/16779977" target="_blank" rel="noopener">KAB熊本朝日放送（VC一覧）</a>／<a href="https://kumamoto-shien.jp/about" target="_blank" rel="noopener">くまもと被災者支援ナビ</a>／<a href="https://www.w-nexco.co.jp/" target="_blank" rel="noopener">NEXCO西日本</a>／<a href="https://www.mlit.go.jp/saigai/saigai_260728.html" target="_blank" rel="noopener">国土交通省</a></p>
     <p>誤り・古い情報のご指摘は運営者までご連絡ください。</p>
   </footer>
